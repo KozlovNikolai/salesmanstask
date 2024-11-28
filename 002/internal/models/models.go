@@ -1,12 +1,16 @@
 package models
 
-import "sync"
+import (
+	"sync"
+)
 
 type CellWithMaxMin struct {
 	RowName int
 	ColName int
 	MaxSum  int
 }
+
+var Debug bool
 
 type NamesOfIndexes struct {
 	mu          sync.Mutex
@@ -82,13 +86,15 @@ func (nof *NamesOfIndexes) RemoveColByIndex(index int) (int, *NamesOfIndexes) {
 	return name, nof
 }
 
-type Results struct {
-	Tour []Node
-	Back []Node
-}
-type Node struct {
-	ID  int
-	W   int
-	In  int
-	Out int
-}
+// type Results struct {
+// 	Tour []bitree.Node
+// 	Back []bitree.Node
+// }
+
+// type Node struct {
+// 	ID   int
+// 	W    int
+// 	In   int
+// 	Out  int
+// 	Node *bitree.TreeNode
+// }

@@ -1,13 +1,6 @@
 package methods
 
 func RemoveCellFromMatrixByIndex(mx [][]int, nameRow int, nameCol int) [][]int {
-	if nameRow < 0 {
-		nameRow = -nameRow
-	}
-	if nameCol < 0 {
-		nameCol = -nameCol
-	}
-
 	rowInf, colInf := findInfinityCellCoords(mx, nameRow, nameCol)
 	mx[rowInf][colInf] = -1
 	mt := RemoveRowFromMatrixByIndex(mx, nameRow)

@@ -43,12 +43,13 @@ func FindCellWithMaxMin(mx [][]int) models.CellWithMaxMin {
 				}
 				// находим минимальное значение в колонке
 				minCol = findMinFromArray(colArr, i)
-
+				//	fmt.Printf("minRow: %d, minCol: %d\n", minRow, minCol)
 				// записываем результаты проходов через нулевую ячейку в список:
 				list[nullCell{row: i, col: j}] = valsOfCell{
 					minOfRows: minRow,
 					minOfCols: minCol,
 				}
+				//	fmt.Printf("%+v\n", list)
 			}
 		}
 	}

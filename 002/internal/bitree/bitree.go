@@ -27,15 +27,26 @@ type TreeNode struct {
 	Left  *TreeNode
 	Right *TreeNode
 }
+type Node struct {
+	ID   int
+	W    int
+	In   int
+	Out  int
+	Node *TreeNode
+}
 
+type Results struct {
+	Tour []Node
+	Back []Node
+}
 type BiTree struct {
 	Q           int
 	State       map[int]*TreeNode
 	Count       int
-	Result      models.Results
+	Result      Results
 	CurrentNode *TreeNode
 	RootNode    *TreeNode
-	mutex       *sync.Mutex
+	mutex       sync.Mutex
 }
 
 func NewBiTree(weight int) *BiTree {
@@ -43,14 +54,14 @@ func NewBiTree(weight int) *BiTree {
 		Q:           math.MaxInt,
 		State:       make(map[int]*TreeNode),
 		Count:       0,
-		Result:      models.Results{},
+		Result:      Results{},
 		CurrentNode: &TreeNode{},
 		RootNode:    &TreeNode{},
-		mutex:       &sync.Mutex{},
+		mutex:       sync.Mutex{},
 	}
 
 	// создаем Root и сохраняем в мапе
-	nd := models.Node{ID: bt.Count, W: weight}
+	nd := Node{ID: bt.Count, W: weight}
 	bt.RootNode = &TreeNode{Val: fmt.Sprintf("w%d:Root", nd.W)}
 	bt.State[bt.Count] = bt.RootNode
 	bt.Count++
@@ -61,9 +72,13 @@ func NewBiTree(weight int) *BiTree {
 func (bt *BiTree) CreateLeftNode(w, o, i int, setCurrent bool) {
 	bt.mutex.Lock()
 	defer bt.mutex.Unlock()
-	fmt.Printf("Left: w:%d, out:%d,in:%d\n", w, o, i)
-	nd := models.Node{ID: bt.Count, W: w, Out: o, In: i}
+	if models.Debug {
+		fmt.Printf("Left: w:%d, out:%d,in:%d\n", w, o, i)
+	}
+
+	nd := Node{ID: bt.Count, W: w, Out: o, In: i}
 	bt.CurrentNode.InsertLeft(fmt.Sprintf("w%d:-%d.%d", nd.W, nd.Out, nd.In))
+	nd.Node = bt.CurrentNode.Left
 	bt.State[bt.Count] = bt.CurrentNode.Left
 	bt.Result.Back = append(bt.Result.Back, nd)
 	if setCurrent {
@@ -74,9 +89,13 @@ func (bt *BiTree) CreateLeftNode(w, o, i int, setCurrent bool) {
 func (bt *BiTree) CreateRightNode(w, o, i int, setCurrent bool) {
 	bt.mutex.Lock()
 	defer bt.mutex.Unlock()
-	fmt.Printf("Right: w:%d, out:%d,in:%d\n", w, o, i)
-	nd := models.Node{ID: bt.Count, W: w, Out: o, In: i}
+	if models.Debug {
+		fmt.Printf("Right: w:%d, out:%d,in:%d\n", w, o, i)
+	}
+
+	nd := Node{ID: bt.Count, W: w, Out: o, In: i}
 	bt.CurrentNode.InsertRight(fmt.Sprintf("w%d:%d.%d", nd.W, nd.Out, nd.In))
+	nd.Node = bt.CurrentNode.Right
 	bt.State[bt.Count] = bt.CurrentNode.Right
 	bt.Result.Tour = append(bt.Result.Tour, nd)
 	if setCurrent {
@@ -88,9 +107,13 @@ func (bt *BiTree) CreateRightNode(w, o, i int, setCurrent bool) {
 func (bt *BiTree) CreateLastNode(w, o, i int) {
 	bt.mutex.Lock()
 	defer bt.mutex.Unlock()
-	fmt.Printf("Last: w:%d, out:%d,in:%d\n", w, o, i)
-	nd := models.Node{ID: bt.Count, W: w, Out: o, In: i}
+	if models.Debug {
+		fmt.Printf("Last: w:%d, out:%d,in:%d\n", w, o, i)
+	}
+
+	nd := Node{ID: bt.Count, W: w, Out: o, In: i}
 	bt.CurrentNode.InsertRight(fmt.Sprintf("w%d:%d.%d", nd.W, nd.Out, nd.In))
+	nd.Node = bt.CurrentNode.Right
 	bt.State[bt.Count] = bt.CurrentNode.Right
 	bt.Result.Tour = append(bt.Result.Tour, nd)
 	bt.Count++
