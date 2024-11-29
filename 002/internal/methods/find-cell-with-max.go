@@ -23,10 +23,10 @@ func FindCellWithMaxMin(mx [][]int) models.CellWithMaxMin {
 	colsLen := len(mx[0])
 
 	// создаем список значений нулевых ячеек размером минимум по количеству колонок
-	list := make(map[nullCell]valsOfCell)
+	// list := make(map[nullCell]valsOfCell)
 	var minRow int
 	var minCol int
-
+	result := models.CellWithMaxMin{}
 	// идем по строкам исключая строку с заголовками
 	for i := 1; i < rowsLen; i++ {
 		// идем по элементам строки исключая заголовок строки
@@ -43,29 +43,35 @@ func FindCellWithMaxMin(mx [][]int) models.CellWithMaxMin {
 				}
 				// находим минимальное значение в колонке
 				minCol = findMinFromArray(colArr, i)
-				//	fmt.Printf("minRow: %d, minCol: %d\n", minRow, minCol)
-				// записываем результаты проходов через нулевую ячейку в список:
-				list[nullCell{row: i, col: j}] = valsOfCell{
-					minOfRows: minRow,
-					minOfCols: minCol,
+
+				if minCol+minRow > result.MaxSum {
+					result = models.CellWithMaxMin{
+						RowName: mx[i][0],
+						ColName: mx[0][j],
+						MaxSum:  minCol + minRow,
+					}
 				}
+
+				// записываем результаты проходов через нулевую ячейку в список:
+				// list[nullCell{row: i, col: j}] = valsOfCell{
+				// 	minOfRows: minRow,
+				// 	minOfCols: minCol,
+				// }
 				//	fmt.Printf("%+v\n", list)
 			}
 		}
 	}
 
-	result := models.CellWithMaxMin{}
-
-	for i, v := range list {
-		// fmt.Printf("[%+v], %+v\n", i, v)
-		if v.minOfCols+v.minOfRows > result.MaxSum {
-			result = models.CellWithMaxMin{
-				RowName: mx[i.row][0],
-				ColName: mx[0][i.col],
-				MaxSum:  v.minOfCols + v.minOfRows,
-			}
-		}
-	}
+	// for i, v := range list {
+	// 	// fmt.Printf("[%+v], %+v\n", i, v)
+	// 	if v.minOfCols+v.minOfRows > result.MaxSum {
+	// 		result = models.CellWithMaxMin{
+	// 			RowName: mx[i.row][0],
+	// 			ColName: mx[0][i.col],
+	// 			MaxSum:  v.minOfCols + v.minOfRows,
+	// 		}
+	// 	}
+	// }
 	fmt.Printf("Max:%d, (%d,%d)\n", result.MaxSum, result.RowName, result.ColName)
 	return result
 }
