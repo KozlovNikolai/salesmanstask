@@ -6,15 +6,6 @@ import (
 	"salesmanstask/003/internal/models"
 )
 
-type nullCell struct {
-	row int
-	col int
-}
-type valsOfCell struct {
-	minOfRows int
-	minOfCols int
-}
-
 // FindCellWithMaxЬшт ищет ячейку из нулевых ячеек, где
 // сумма минимальных значений строки и столбца - максимальна
 func FindCellWithMaxMin(mx [][]int) models.CellWithMaxMin {
@@ -51,27 +42,9 @@ func FindCellWithMaxMin(mx [][]int) models.CellWithMaxMin {
 						MaxSum:  minCol + minRow,
 					}
 				}
-
-				// записываем результаты проходов через нулевую ячейку в список:
-				// list[nullCell{row: i, col: j}] = valsOfCell{
-				// 	minOfRows: minRow,
-				// 	minOfCols: minCol,
-				// }
-				//	fmt.Printf("%+v\n", list)
 			}
 		}
 	}
-
-	// for i, v := range list {
-	// 	// fmt.Printf("[%+v], %+v\n", i, v)
-	// 	if v.minOfCols+v.minOfRows > result.MaxSum {
-	// 		result = models.CellWithMaxMin{
-	// 			RowName: mx[i.row][0],
-	// 			ColName: mx[0][i.col],
-	// 			MaxSum:  v.minOfCols + v.minOfRows,
-	// 		}
-	// 	}
-	// }
 	fmt.Printf("Max:%d, (%d,%d)\n", result.MaxSum, result.RowName, result.ColName)
 	return result
 }

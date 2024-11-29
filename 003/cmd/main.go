@@ -6,6 +6,7 @@ import (
 	"salesmanstask/003/internal/iteration"
 	"salesmanstask/003/internal/methods"
 	"salesmanstask/003/internal/models"
+	"time"
 )
 
 // var matrix = [][]int{
@@ -79,10 +80,54 @@ func main() {
 	Result      структура с результатами одной итерации (Маршрут и отложенные узлы с весам, приведенные матрицы узлов)
 	CurrentNode текущий узел дерева
 	RootNode    корневой узел дерева */
-	bitree.BT = bitree.NewBiTree(mtr, models.LbtfRoot)
+	bitree.BT = bitree.NewBiTree(matrixOriginal, models.LbtfRoot)
 
 	// начинаем итерации создания ветвей:
-	results := iteration.Iteration(mtr, bitree.BT.RootNode)
+	for {
+		if models.Debug {
+			time.Sleep(1000 * time.Millisecond)
+			fmt.Println("###############################  NEW BRANCH #############################")
+		}
+		results, ok := iteration.Iteration(mtr, bitree.BT.RootNode)
+		// break
+		if ok {
+			weight := 0
+			mtr, bitree.BT.CurrentNode, weight, results = findInBack(results)
+
+			if mtr == nil {
+				fmt.Printf("!!! matrix is NIL !!!\n")
+				break
+			}
+			if bitree.BT.RootNode == nil {
+				fmt.Printf("!!! new root Node is NIL !!!\n")
+				break
+			}
+			models.LbtfRoot = weight
+		} else {
+			fmt.Printf("NOT OK !!!\n")
+			break
+		}
+		if models.Debug {
+			fmt.Println("___________________________________________________")
+			fmt.Printf("\nQ from object: %d\n", bitree.BT.Q)
+			fmt.Printf("\nData from result:\n")
+			fmt.Printf("\nTour:\n")
+			for _, v := range results.Tour {
+				fmt.Printf("W:%d, %s(%d,%d), id: %d\n", v.W, v.Sign, v.Out, v.In, v.ID)
+			}
+			fmt.Printf("\nBack:\n")
+			for _, v := range results.Back {
+				fmt.Printf("W:%d, %s(%d,%d), id: %d\n", v.W, v.Sign, v.Out, v.In, v.ID)
+			}
+		}
+		// if true{
+		// 	bitree.BT.Q = models.LbtfRoot
+		// }
+		if models.Debug {
+			fmt.Println("###############################  stop branch #############################")
+		}
+		bitree.PrintTree(bitree.BT.RootNode)
+	}
 
 	fmt.Println("___________________________________________________")
 	bitree.PrintTree(bitree.BT.RootNode)
@@ -90,14 +135,32 @@ func main() {
 	for _, v := range bitree.BT.Result.Tour {
 		fmt.Printf("W:%d, (%d,%d)\n", v.W, v.Out, v.In)
 	}
-	fmt.Println("___________________________________________________")
-	fmt.Printf("\nData from result:\n")
-	fmt.Printf("\nTour:\n")
-	for _, v := range results.Tour {
+
+	printAllNodes()
+
+}
+
+func printAllNodes() {
+	for _, v := range bitree.BT.Result.Back {
 		fmt.Printf("W:%d, %s(%d,%d), id: %d\n", v.W, v.Sign, v.Out, v.In, v.ID)
+		methods.PrintMatrix(v.Mxs)
 	}
-	fmt.Printf("\nBack:\n")
-	for _, v := range results.Back {
-		fmt.Printf("W:%d, %s(%d,%d), id: %d\n", v.W, v.Sign, v.Out, v.In, v.ID)
+}
+
+func findInBack(res bitree.Results) ([][]int, *bitree.TreeNode, int, bitree.Results) {
+	for i := 1; i < len(res.Back); i++ {
+		if bitree.BT.Q > res.Back[i].W {
+			fmt.Printf("Найдено в отложенных:  W:%d, %s(%d,%d), id: %d\n", res.Back[i].W, res.Back[i].Sign, res.Back[i].Out, res.Back[i].In, res.Back[i].ID)
+			//models.LbtfRoot = res.Back[i].W
+			matrix := res.Back[i].Mxs
+			node := res.Back[i].Node
+			w := res.Back[i].W
+
+			res.Back[i] = res.Back[len(res.Back)-1]
+			res.Back = res.Back[:len(res.Back)-1]
+
+			return matrix, node, w, res
+		}
 	}
+	return nil, nil, 0, bitree.Results{}
 }

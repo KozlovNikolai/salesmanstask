@@ -68,7 +68,6 @@ func NewBiTree(mx [][]int, weight int) *BiTree {
 	nd := Node{ID: bt.Count, W: weight}
 	bt.RootNode = &TreeNode{Val: fmt.Sprintf("w%d:Root", nd.W)}
 	bt.State[bt.Count] = bt.RootNode
-	bt.Count++
 	bt.CurrentNode = bt.RootNode
 	bt.Result.Back = append(bt.Result.Back, Node{
 		ID:   bt.Count,
@@ -77,19 +76,24 @@ func NewBiTree(mx [][]int, weight int) *BiTree {
 		Out:  0,
 		Sign: "Root",
 		Node: bt.RootNode,
-		Mxs:  cloneMx(mx),
+		Mxs:  CloneMx(mx),
 	})
+	bt.Count++
 	return bt
 }
 
-func cloneMx(mx [][]int) [][]int {
+func CloneMx(mx [][]int) [][]int {
 	lenRows := len(mx)
 	lenCols := len(mx[0])
 	mxClone := make([][]int, lenRows)
 	for i := range mxClone {
 		mxClone[i] = make([]int, lenCols)
 	}
-	copy(mxClone, mx)
+	for i := 0; i < lenRows; i++ {
+		for j := 0; j < lenCols; j++ {
+			mxClone[i][j] = mx[i][j]
+		}
+	}
 	return mxClone
 }
 
@@ -100,7 +104,7 @@ func (bt *BiTree) CreateLeftNode(mx [][]int, w, o, i int, setCurrent bool) {
 		fmt.Printf("Left: w:%d, out:%d,in:%d\n", w, o, i)
 	}
 
-	nd := Node{ID: bt.Count, W: w, Out: o, Sign: "-", In: i, Mxs: cloneMx(mx)}
+	nd := Node{ID: bt.Count, W: w, Out: o, Sign: "-", In: i, Mxs: CloneMx(mx)}
 	bt.CurrentNode.InsertLeft(fmt.Sprintf("w%d:-%d.%d", nd.W, nd.Out, nd.In))
 	nd.Node = bt.CurrentNode.Left
 	bt.State[bt.Count] = bt.CurrentNode.Left
@@ -117,7 +121,7 @@ func (bt *BiTree) CreateRightNode(mx [][]int, w, o, i int, setCurrent bool) {
 		fmt.Printf("Right: w:%d, out:%d,in:%d\n", w, o, i)
 	}
 
-	nd := Node{ID: bt.Count, W: w, Out: o, Sign: "+", In: i, Mxs: cloneMx(mx)}
+	nd := Node{ID: bt.Count, W: w, Out: o, Sign: "+", In: i, Mxs: CloneMx(mx)}
 	bt.CurrentNode.InsertRight(fmt.Sprintf("w%d:%d.%d", nd.W, nd.Out, nd.In))
 	nd.Node = bt.CurrentNode.Right
 	bt.State[bt.Count] = bt.CurrentNode.Right
@@ -135,7 +139,7 @@ func (bt *BiTree) CreateLastNode(mx [][]int, w, o, i int) {
 		fmt.Printf("Last: w:%d, out:%d,in:%d\n", w, o, i)
 	}
 
-	nd := Node{ID: bt.Count, W: w, Out: o, Sign: "+", In: i, Mxs: cloneMx(mx)}
+	nd := Node{ID: bt.Count, W: w, Out: o, Sign: "+", In: i, Mxs: CloneMx(mx)}
 	bt.CurrentNode.InsertRight(fmt.Sprintf("w%d:%d.%d", nd.W, nd.Out, nd.In))
 	nd.Node = bt.CurrentNode.Right
 	bt.State[bt.Count] = bt.CurrentNode.Right

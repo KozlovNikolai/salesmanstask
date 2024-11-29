@@ -1,10 +1,10 @@
 package methods
 
-func RemoveCellFromMatrixByIndex(mx [][]int, nameRow int, nameCol int) [][]int {
-	rowInf, colInf := findInfinityCellCoords(mx, nameRow, nameCol)
-	mx[rowInf][colInf] = -1
-	mt := RemoveRowFromMatrixByIndex(mx, nameRow)
-	resultMx := RemoveColFromMatrixByIndex(mt, nameCol)
+func RemoveCellFromMatrixByIndex(mx [][]int, idxRow int, idxCol int) [][]int {
+	// rowInfIdx, colInfIdx := FindInfinityCellCoords(mx, idxRow, idxCol)
+	// mx[rowInfIdx][colInfIdx] = -1
+	mt := RemoveRowFromMatrixByIndex(mx, idxRow)
+	resultMx := RemoveColFromMatrixByIndex(mt, idxCol)
 	return resultMx
 }
 
@@ -31,16 +31,43 @@ func RemoveColFromMatrixByIndex(mx [][]int, nameIndex int) [][]int {
 	return resultMx
 }
 
-func findInfinityCellCoords(mx [][]int, rowDel, colDel int) (rowInfName, colInfName int) {
-	for i := 0; i < len(mx); i++ {
-		if mx[i][colDel] == -1 {
-			rowInfName = i
-			break
+// func FindInfinityCellCoords(mx [][]int, rowDel, colDel int) (rowInfName, colInfName int) {
+// 	for i := 0; i < len(mx); i++ {
+// 		if mx[i][colDel] == -1 {
+// 			rowInfName = i
+// 			break
+// 		}
+// 	}
+// 	for j := 0; j < len(mx[0]); j++ {
+// 		if mx[rowDel][j] == -1 {
+// 			colInfName = j
+// 		}
+// 	}
+// 	return
+// }
+
+func FindInfinityCellCoords(mx [][]int) (rowInfName, colInfName int) {
+	PrintMatrix(mx)
+
+	for i := 1; i < len(mx); i++ {
+		for j := 1; j < len(mx[0]); j++ {
+			// fmt.Printf("mx[%d,%d]=%d\n", i, j, mx[i][j])
+			if mx[i][j] == -1 {
+				break
+			}
+			if j == len(mx[0])-1 {
+				rowInfName = i
+			}
 		}
 	}
 	for j := 0; j < len(mx[0]); j++ {
-		if mx[rowDel][j] == -1 {
-			colInfName = j
+		for i := 1; i < len(mx); i++ {
+			if mx[i][j] == -1 {
+				break
+			}
+			if i == len(mx)-1 {
+				colInfName = j
+			}
 		}
 	}
 	return
