@@ -1,5 +1,7 @@
 package methods
 
+import "salesmanstask/003/internal/models"
+
 func RemoveCellFromMatrixByIndex(mx [][]int, idxRow int, idxCol int) [][]int {
 	// rowInfIdx, colInfIdx := FindInfinityCellCoords(mx, idxRow, idxCol)
 	// mx[rowInfIdx][colInfIdx] = -1
@@ -47,7 +49,9 @@ func RemoveColFromMatrixByIndex(mx [][]int, nameIndex int) [][]int {
 // }
 
 func FindInfinityCellCoords(mx [][]int) (rowInfName, colInfName int) {
-	PrintMatrix(mx)
+	if models.Debug {
+		PrintMatrix(mx)
+	}
 
 	for i := 1; i < len(mx); i++ {
 		for j := 1; j < len(mx[0]); j++ {

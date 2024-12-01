@@ -72,7 +72,10 @@ func FindCellWithMaxMin(mx [][]int) models.CellWithMaxMin {
 	// 		}
 	// 	}
 	// }
-	fmt.Printf("Max:%d, (%d,%d)\n", result.MaxSum, result.RowName, result.ColName)
+	if models.Debug {
+		fmt.Printf("Max:%d, (%d,%d)\n", result.MaxSum, result.RowName, result.ColName)
+	}
+
 	return result
 }
 
