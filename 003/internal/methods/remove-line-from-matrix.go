@@ -1,6 +1,9 @@
 package methods
 
-import "salesmanstask/003/internal/models"
+import (
+	"fmt"
+	"salesmanstask/003/internal/models"
+)
 
 func RemoveCellFromMatrixByIndex(mx [][]int, idxRow int, idxCol int) [][]int {
 	// rowInfIdx, colInfIdx := FindInfinityCellCoords(mx, idxRow, idxCol)
@@ -51,6 +54,8 @@ func RemoveColFromMatrixByIndex(mx [][]int, nameIndex int) [][]int {
 func FindInfinityCellCoords(mx [][]int) (rowInfName, colInfName int) {
 	if models.Debug {
 		PrintMatrix(mx)
+		fmt.Println("удаляем строку и столбец   ^^^")
+		fmt.Println("___________________________________________________")
 	}
 
 	for i := 1; i < len(mx); i++ {

@@ -8,29 +8,24 @@ import (
 )
 
 func Iteration(matrix [][]int, node *bitree.TreeNode) (bitree.Results, bool) {
+	// создаем узлы ветви:
 	for {
-
 		mx := Step(matrix)
-
 		if models.Debug {
 			fmt.Printf("bitree.BT.Q: %d,\nbitree.BT.Result.Tour[len(bitree.BT.Result.Tour)-1].W: %d\n", bitree.BT.Q, bitree.BT.Result.Tour[len(bitree.BT.Result.Tour)-1].W)
 		}
 		if bitree.BT.Q < bitree.BT.Result.Tour[len(bitree.BT.Result.Tour)-1].W {
 			fmt.Printf("Break, Q: %d, Tour: %d\n", bitree.BT.Q, bitree.BT.Result.Tour[len(bitree.BT.Result.Tour)-1].W)
 			return bitree.BT.Result, false
-			// break
 		}
 		if len(mx) == 3 {
 			fmt.Printf("Break, len(mx): %d\n", len(mx))
 			EndingBranch(mx)
 			bitree.BT.Q = models.LbtfRoot
 			return bitree.BT.Result, true
-			// break
 		}
 		matrix = bitree.CloneMx(mx)
 	}
-	// bitree.BT.Q = models.LbtfRoot
-	// fmt.Printf("Q: %d\n", bitree.BT.Q)
 	return bitree.Results{}, false
 }
 
@@ -74,7 +69,7 @@ func Step(mc [][]int) [][]int {
 
 	if models.Debug {
 		methods.PrintMatrix(mx3)
-		fmt.Println("      удаление строки и столбца     ^^^")
+		fmt.Println(" маркируем клетку пересечения свободных колонки и строки   ^^^")
 		fmt.Println("_________________________________________________________________")
 	}
 
@@ -128,6 +123,8 @@ func EndingBranch(mx [][]int) {
 	// 	fmt.Printf("mx:\n%+v\n", mx)
 	// }
 	m := bitree.BT.Result.Back[0].Mxs
+	fmt.Println("origin:")
+	methods.PrintMatrix(m)
 	for i := 1; i < 2; i++ {
 		for j := 1; j < 3; j++ {
 			if mx[i][j] != -1 {
@@ -153,7 +150,7 @@ func EndingBranch(mx [][]int) {
 				rowIdx, colIdx = idxByName(m, rowName2, colName2)
 				weight2 := m[rowIdx][colIdx]
 				if weight1 < weight2 {
-					bitree.BT.CreateRightNode(mx, models.LbtfRoot, rowName1, colName2, true)
+					bitree.BT.CreateRightNode(mx, models.LbtfRoot, rowName1, colName1, true)
 					bitree.BT.CreateLastNode(mx, models.LbtfRoot, rowName2, colName2)
 				} else {
 					bitree.BT.CreateRightNode(mx, models.LbtfRoot, rowName2, colName2, true)
@@ -161,10 +158,6 @@ func EndingBranch(mx [][]int) {
 				}
 				break
 			}
-			// if models.Debug {
-			// 	fmt.Println("пропускаем:")
-			// }
-
 		}
 	}
 }

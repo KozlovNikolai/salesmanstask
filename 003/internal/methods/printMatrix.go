@@ -57,7 +57,7 @@ func PrintMatrix(mx [][]int) {
 	black := color.New(color.FgHiBlack).SprintFunc()
 	green := color.New(color.FgHiGreen).SprintFunc()
 
-	fmt.Println()
+	//fmt.Println()
 	for i := 0; i < len(mx); i++ {
 		for j := 0; j < len(mx[i]); j++ {
 			if i == 0 || j == 0 {
@@ -74,4 +74,5 @@ func PrintMatrix(mx [][]int) {
 		}
 		fmt.Println()
 	}
+	fmt.Println()
 }

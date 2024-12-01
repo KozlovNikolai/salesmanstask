@@ -6,86 +6,25 @@ import (
 	"salesmanstask/003/internal/iteration"
 	"salesmanstask/003/internal/methods"
 	"salesmanstask/003/internal/models"
-	"time"
+	"salesmanstask/data"
 )
-
-// var matrix = [][]int{
-// 	{0, 0, -1},
-// 	{-1, 3, 5},
-// 	{2, -1, 0},
-// }
-
-// var matrix = [][]int{
-// 	{-1, 0, 0, 2},
-// 	{0, -1, 3, 5},
-// 	{2, 12, 10, -1},
-// 	{0, 2, 0, 0},
-// }
-
-// var matrix = [][]int{
-// 	{-1, 5, 16, 14},
-// 	{0, -1, 6, 9},
-// 	{0, 12, -1, 11},
-// 	{0, 15, 7, -1},
-// }
-
-// var matrix = [][]int{
-// 	{-1, 5, 16, 14},
-// 	{13, -1, 6, 9},
-// 	{10, 12, -1, 11},
-// 	{8, 15, 7, -1},
-// }
-// var matrix = [][]int{
-// 	{-1, 0, 0, 2, 3},
-// 	{6, -1, 9, 11, -1},
-// 	{4, 14, -1, 11, 0},
-// 	{2, 12, 10, -1, 0},
-// 	{0, 2, 0, 0, -1},
-// }
-
-// var matrix = [][]int{
-// 	{-1, 1, 2, 3, 4},
-// 	{14, -1, 15, 16, 5},
-// 	{13, 20, -1, 17, 6},
-// 	{12, 19, 18, -1, 7},
-// 	{11, 10, 9, 8, -1},
-// }
-
-// var matrix = [][]int{
-// 	{-1, 47, 22, 46, 29},
-// 	{34, -1, 25, 34, 19},
-// 	{18, 18, -1, 33, 7},
-// 	{38, 27, 24, -1, 38},
-// 	{21, 14, 6, 27, -1},
-// }
-
-var matrix = [][]int{
-	{-1, 1, 2, 3, 4, 9, 3, 6, 4, 6, 6, 5, 4, 3, 2},
-	{14, -1, 15, 16, 5, 23, 45, 6, 1, 5, 7, 6, 8, 9, 23},
-	{13, 20, -1, 17, 6, 54, 2, 5, 8, 3, 5, 7, 98, 4, 3},
-	{12, 19, 18, -1, 7, 6, 4, 6, 7, 6, 5, 6, 87, 8, 4},
-	{11, 10, 9, 8, -1, 2, 5, 7, 7, 5, 7, 9, 32, 6, 7},
-	{11, 10, 9, 8, 6, -1, 5, 7, 7, 5, 7, 9, 32, 6, 7},
-	{11, 10, 9, 8, 2, 2, -1, 7, 7, 5, 7, 9, 32, 6, 7},
-	{11, 10, 9, 8, 9, 2, 5, -1, 7, 5, 7, 9, 32, 6, 7},
-	{11, 10, 9, 8, 2, 2, 5, 7, -1, 5, 7, 9, 32, 6, 7},
-	{11, 10, 9, 8, 7, 2, 5, 7, 7, -1, 7, 9, 32, 6, 7},
-	{11, 10, 9, 8, 9, 2, 5, 7, 7, 5, -1, 9, 32, 6, 7},
-	{11, 10, 9, 8, 3, 2, 5, 7, 7, 5, 7, -1, 32, 6, 7},
-	{11, 10, 9, 8, 7, 2, 5, 7, 7, 5, 7, 9, -1, 6, 7},
-	{11, 10, 9, 8, 9, 2, 5, 7, 7, 5, 7, 9, 32, -1, 7},
-	{11, 10, 9, 8, 9, 2, 5, 7, 7, 5, 7, 9, 32, 6, -1},
-}
 
 var Debug = false
 
 func main() {
+	for i := range data.Matrixes {
+		fmt.Printf("\n#########################\n#\tMatrix: %d\t#\n#########################\n", i)
+		Calculate(data.Matrixes[i])
+	}
+}
+
+func Calculate(mx [][]int) {
 	models.Debug = Debug
 	// именуем столбцы и строки
-	matrixOriginal := methods.SetNaming(matrix)
-	methods.PrintMatrix(matrixOriginal)
-	fmt.Println("исходная матрица    ^^^")
-	fmt.Println("____________________________________________________________________________")
+	matrixOriginal := methods.SetNaming(mx)
+	// methods.PrintMatrix(matrixOriginal)
+	// fmt.Println("исходная матрица    ^^^")
+	// fmt.Println("____________________________________________________________________________")
 
 	if Debug {
 		methods.PrintMatrix(matrixOriginal)
@@ -114,7 +53,7 @@ func main() {
 	// начинаем итерации создания ветвей:
 	for {
 		if models.Debug {
-			time.Sleep(1000 * time.Millisecond)
+			//time.Sleep(1000 * time.Millisecond)
 			fmt.Println("###############################  NEW BRANCH #############################")
 		}
 		results, ok := iteration.Iteration(mtr, bitree.BT.RootNode)
@@ -148,14 +87,7 @@ func main() {
 			for _, v := range results.Back {
 				fmt.Printf("W:%d, %s(%d,%d), id: %d\n", v.W, v.Sign, v.Out, v.In, v.ID)
 			}
-		}
-		// if true{
-		// 	bitree.BT.Q = models.LbtfRoot
-		// }
-		if models.Debug {
 			fmt.Println("###############################  stop branch #############################")
-		}
-		if models.Debug {
 			bitree.PrintTree(bitree.BT.RootNode)
 		}
 
@@ -165,15 +97,20 @@ func main() {
 	bitree.PrintTree(bitree.BT.RootNode)
 	fmt.Printf("\nTour from state:\n")
 	for _, v := range bitree.BT.Result.Tour {
-		fmt.Printf("W:%d, (%d,%d)\n", v.W, v.Out, v.In)
+		fmt.Printf("ID:%d, W:%d, (%d,%d)\n", v.ID, v.W, v.Out, v.In)
 	}
 	if models.Debug {
 		printAllNodes()
 	}
-
 }
 
 func printAllNodes() {
+	fmt.Println("Все узлы Маршрута:")
+	for _, v := range bitree.BT.Result.Tour {
+		fmt.Printf("W:%d, %s(%d,%d), id: %d\n", v.W, v.Sign, v.Out, v.In, v.ID)
+		methods.PrintMatrix(v.Mxs)
+	}
+	fmt.Println("Все отложенные узлы:")
 	for _, v := range bitree.BT.Result.Back {
 		fmt.Printf("W:%d, %s(%d,%d), id: %d\n", v.W, v.Sign, v.Out, v.In, v.ID)
 		methods.PrintMatrix(v.Mxs)
@@ -183,8 +120,13 @@ func printAllNodes() {
 func findInBack(res bitree.Results) ([][]int, *bitree.TreeNode, int, bitree.Results) {
 	for i := 1; i < len(res.Back); i++ {
 		if bitree.BT.Q > res.Back[i].W {
-			fmt.Printf("Найдено в отложенных:  W:%d, %s(%d,%d), id: %d\n", res.Back[i].W, res.Back[i].Sign, res.Back[i].Out, res.Back[i].In, res.Back[i].ID)
-			//models.LbtfRoot = res.Back[i].W
+			fmt.Printf("Найдено в отложенных:  W:%d, %s(%d,%d), id: %d\n",
+				res.Back[i].W,
+				res.Back[i].Sign,
+				res.Back[i].Out,
+				res.Back[i].In,
+				res.Back[i].ID)
+
 			matrix := res.Back[i].Mxs
 			node := res.Back[i].Node
 			w := res.Back[i].W
