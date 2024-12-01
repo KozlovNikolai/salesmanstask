@@ -108,10 +108,14 @@ func (bt *BiTree) CreateLeftNode(mx [][]int, w, o, i int, setCurrent bool) {
 	bt.CurrentNode.InsertLeft(fmt.Sprintf("w%d:-%d.%d", nd.W, nd.Out, nd.In))
 	nd.Node = bt.CurrentNode.Left
 	bt.State[bt.Count] = bt.CurrentNode.Left
-	bt.Result.Back = append(bt.Result.Back, nd)
+
 	if setCurrent {
-		bt.CurrentNode = bt.CurrentNode.Left
+		bt.Result.Tour = append(bt.Result.Tour, nd)
+		// bt.CurrentNode = bt.CurrentNode.Left
+	} else {
+		bt.Result.Back = append(bt.Result.Back, nd)
 	}
+
 	bt.Count++
 }
 func (bt *BiTree) CreateRightNode(mx [][]int, w, o, i int, setCurrent bool) {
@@ -125,9 +129,12 @@ func (bt *BiTree) CreateRightNode(mx [][]int, w, o, i int, setCurrent bool) {
 	bt.CurrentNode.InsertRight(fmt.Sprintf("w%d:%d.%d", nd.W, nd.Out, nd.In))
 	nd.Node = bt.CurrentNode.Right
 	bt.State[bt.Count] = bt.CurrentNode.Right
-	bt.Result.Tour = append(bt.Result.Tour, nd)
+
 	if setCurrent {
-		bt.CurrentNode = bt.CurrentNode.Right
+		bt.Result.Tour = append(bt.Result.Tour, nd)
+		// bt.CurrentNode = bt.CurrentNode.Right
+	} else {
+		bt.Result.Back = append(bt.Result.Back, nd)
 	}
 
 	bt.Count++

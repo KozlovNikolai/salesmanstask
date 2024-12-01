@@ -7,7 +7,8 @@ import (
 	"salesmanstask/003/internal/models"
 )
 
-func Iteration(matrix [][]int, node *bitree.TreeNode) (bitree.Results, bool) {
+// func Iteration(matrix [][]int, node *bitree.TreeNode) (bitree.Results, bool) {
+func Iteration(matrix [][]int, node *bitree.TreeNode) bool {
 	// создаем узлы ветви:
 	for {
 		mx := Step(matrix)
@@ -15,18 +16,17 @@ func Iteration(matrix [][]int, node *bitree.TreeNode) (bitree.Results, bool) {
 			fmt.Printf("bitree.BT.Q: %d,\nbitree.BT.Result.Tour[len(bitree.BT.Result.Tour)-1].W: %d\n", bitree.BT.Q, bitree.BT.Result.Tour[len(bitree.BT.Result.Tour)-1].W)
 		}
 		if bitree.BT.Q < bitree.BT.Result.Tour[len(bitree.BT.Result.Tour)-1].W {
-			fmt.Printf("Break, Q: %d, Tour: %d\n", bitree.BT.Q, bitree.BT.Result.Tour[len(bitree.BT.Result.Tour)-1].W)
-			return bitree.BT.Result, false
+			fmt.Printf("\nBreak, Q: %d, Tour: %d\n", bitree.BT.Q, bitree.BT.Result.Tour[len(bitree.BT.Result.Tour)-1].W)
+			return false
 		}
 		if len(mx) == 3 {
-			fmt.Printf("Break, len(mx): %d\n", len(mx))
+			fmt.Printf("\nBreak, len(mx): %d\n", len(mx))
 			EndingBranch(mx)
 			bitree.BT.Q = models.LbtfRoot
-			return bitree.BT.Result, true
+			return true
 		}
 		matrix = bitree.CloneMx(mx)
 	}
-	return bitree.Results{}, false
 }
 
 func Step(mc [][]int) [][]int {
@@ -50,16 +50,14 @@ func Step(mc [][]int) [][]int {
 	}
 
 	// ищем ячейку по максимальной сумме минимумов строк и столбцов нулевых ячеек:
-	// nextNode := methods.FindCellWithMaxMin(mc)
 	nextNode := methods.FindCellWithMaxMin(mx5)
+
 	// удаляем найденную ячейку с ее строкой и столбцом:
-	// rowIdx, colIdx := idxByName(mc, nextNode.RowName, nextNode.ColName)
 	rowIdx, colIdx := idxByName(mx5, nextNode.RowName, nextNode.ColName)
 	if models.Debug {
 		fmt.Printf("RowName: %d, rowIdx: %d\n", nextNode.RowName, rowIdx)
 		fmt.Printf("ColName: %d, colIdx: %d\n", nextNode.ColName, colIdx)
 	}
-	// mx2 := bitree.CloneMx(mc)
 	mx2 := bitree.CloneMx(mx5)
 	mx2[rowIdx][colIdx] = -1
 	mx3 := methods.RemoveCellFromMatrixByIndex(mx5, rowIdx, colIdx)
@@ -92,7 +90,11 @@ func Step(mc [][]int) [][]int {
 	bitree.BT.CreateLeftNode(mx2, models.LbtfRoot+nextNode.MaxSum, nextNode.RowName, nextNode.ColName, !setCurrentRightNode)
 	bitree.BT.CreateRightNode(mx2, models.LbtfRoot+lbtfNode, nextNode.RowName, nextNode.ColName, setCurrentRightNode)
 	if setCurrentRightNode {
+		bitree.BT.CurrentNode = bitree.BT.CurrentNode.Right
 		models.LbtfRoot = models.LbtfRoot + lbtfNode
+	} else {
+		models.LbtfRoot = models.LbtfRoot + nextNode.MaxSum
+		bitree.BT.CurrentNode = bitree.BT.CurrentNode.Left
 	}
 	if models.Debug {
 		fmt.Println("---------STOP----------------")
@@ -119,12 +121,12 @@ func idxByName(m [][]int, rowName, colName int) (rowIdx, colIdx int) {
 }
 
 func EndingBranch(mx [][]int) {
-	// if models.Debug {
-	// 	fmt.Printf("mx:\n%+v\n", mx)
-	// }
 	m := bitree.BT.Result.Back[0].Mxs
-	fmt.Println("origin:")
-	methods.PrintMatrix(m)
+	if models.Debug {
+		fmt.Println("origin:")
+		methods.PrintMatrix(m)
+	}
+
 	for i := 1; i < 2; i++ {
 		for j := 1; j < 3; j++ {
 			if mx[i][j] != -1 {
