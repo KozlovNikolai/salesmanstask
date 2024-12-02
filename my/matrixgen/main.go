@@ -8,13 +8,23 @@ import (
 )
 
 func main() {
-	size := 100
+	size := 30
 
 	matrix := make([][]int, size)
 	for i := 0; i < size; i++ {
 		matrix[i] = make([]int, size)
 		for j := 0; j < size; j++ {
-			matrix[i][j] = rand.Intn(100)
+			if i == j {
+				matrix[i][j] = -1
+			} else {
+				for {
+					matrix[i][j] = rand.Intn(100)
+					if matrix[i][j] != 0 {
+						break
+					}
+				}
+			}
+
 		}
 	}
 
