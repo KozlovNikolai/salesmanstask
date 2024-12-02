@@ -3,6 +3,7 @@ package bitree
 import (
 	"errors"
 	"fmt"
+	"log"
 	"math"
 	"salesmanstask/003/internal/models"
 	"strings"
@@ -34,7 +35,7 @@ type Node struct {
 	Out  int
 	Sign string
 	Node *TreeNode
-	Mxs  [][]int
+	//Mxs  [][]int
 }
 
 type Results struct {
@@ -76,7 +77,7 @@ func NewBiTree(mx [][]int, weight int) *BiTree {
 		Out:  0,
 		Sign: "Root",
 		Node: bt.RootNode,
-		Mxs:  CloneMx(mx),
+		//Mxs:  CloneMx(mx),
 	})
 	bt.Count++
 	return bt
@@ -97,15 +98,21 @@ func CloneMx(mx [][]int) [][]int {
 	return mxClone
 }
 
-func (bt *BiTree) CreateLeftNode(mx [][]int, w, o, i int, setCurrent bool) {
+// func (bt *BiTree) CreateLeftNode(mx [][]int, w, o, i int, setCurrent bool) {
+func (bt *BiTree) CreateLeftNode(w, o, i int, setCurrent bool) {
 	bt.mutex.Lock()
 	defer bt.mutex.Unlock()
 	if models.Debug {
 		fmt.Printf("Left: w:%d, out:%d,in:%d\n", w, o, i)
 	}
 
-	nd := Node{ID: bt.Count, W: w, Out: o, Sign: "-", In: i, Mxs: CloneMx(mx)}
-	bt.CurrentNode.InsertLeft(fmt.Sprintf("w%d:-%d.%d", nd.W, nd.Out, nd.In))
+	// nd := Node{ID: bt.Count, W: w, Out: o, Sign: "-", In: i, Mxs: CloneMx(mx)}
+	nd := Node{ID: bt.Count, W: w, Out: o, Sign: "-", In: i}
+
+	err := bt.CurrentNode.InsertLeft(fmt.Sprintf("w%d:-%d.%d", nd.W, nd.Out, nd.In))
+	if err != nil {
+		log.Fatal("Insert Left node is failure: ", err)
+	}
 	nd.Node = bt.CurrentNode.Left
 	bt.State[bt.Count] = bt.CurrentNode.Left
 
@@ -118,15 +125,21 @@ func (bt *BiTree) CreateLeftNode(mx [][]int, w, o, i int, setCurrent bool) {
 
 	bt.Count++
 }
-func (bt *BiTree) CreateRightNode(mx [][]int, w, o, i int, setCurrent bool) {
+
+// func (bt *BiTree) CreateRightNode(mx [][]int, w, o, i int, setCurrent bool) {
+func (bt *BiTree) CreateRightNode(w, o, i int, setCurrent bool) {
 	bt.mutex.Lock()
 	defer bt.mutex.Unlock()
 	if models.Debug {
 		fmt.Printf("Right: w:%d, out:%d,in:%d\n", w, o, i)
 	}
 
-	nd := Node{ID: bt.Count, W: w, Out: o, Sign: "+", In: i, Mxs: CloneMx(mx)}
-	bt.CurrentNode.InsertRight(fmt.Sprintf("w%d:%d.%d", nd.W, nd.Out, nd.In))
+	// nd := Node{ID: bt.Count, W: w, Out: o, Sign: "+", In: i, Mxs: CloneMx(mx)}
+	nd := Node{ID: bt.Count, W: w, Out: o, Sign: "+", In: i}
+	err := bt.CurrentNode.InsertRight(fmt.Sprintf("w%d:%d.%d", nd.W, nd.Out, nd.In))
+	if err != nil {
+		log.Fatal("Insert Right node is failure: ", err)
+	}
 	nd.Node = bt.CurrentNode.Right
 	bt.State[bt.Count] = bt.CurrentNode.Right
 
@@ -139,16 +152,21 @@ func (bt *BiTree) CreateRightNode(mx [][]int, w, o, i int, setCurrent bool) {
 
 	bt.Count++
 }
-func (bt *BiTree) CreateLastNode(mx [][]int, w, o, i int) {
+
+// func (bt *BiTree) CreateLastNode(mx [][]int, w, o, i int) {
+func (bt *BiTree) CreateLastNode(w, o, i int) {
 	bt.mutex.Lock()
 	defer bt.mutex.Unlock()
 	if models.Debug {
 		fmt.Printf("Last: w:%d, out:%d,in:%d\n", w, o, i)
 	}
-
-	nd := Node{ID: bt.Count, W: w, Out: o, Sign: "+", In: i, Mxs: CloneMx(mx)}
-	bt.CurrentNode.InsertRight(fmt.Sprintf("w%d:%d.%d", nd.W, nd.Out, nd.In))
-	nd.Node = bt.CurrentNode.Right
+	// nd := Node{ID: bt.Count, W: w, Out: o, Sign: "+", In: i, Mxs: CloneMx(mx)}
+	nd := Node{ID: bt.Count, W: w, Out: o, Sign: "+", In: i}
+	err := bt.CurrentNode.InsertRight(fmt.Sprintf("w%d:%d.%d", nd.W, nd.Out, nd.In))
+	if err != nil {
+		log.Fatal("Insert Last node is failure: ", err)
+	}
+	//nd.Node = bt.CurrentNode.Right
 	bt.State[bt.Count] = bt.CurrentNode.Right
 	bt.Result.Tour = append(bt.Result.Tour, nd)
 	bt.Count++

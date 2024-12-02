@@ -12,6 +12,7 @@ type CellWithMaxMin struct {
 
 var LbtfRoot int
 var Debug bool
+var MxRoot [][]int
 
 type NamesOfIndexes struct {
 	mu          sync.Mutex

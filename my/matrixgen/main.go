@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	size := 30
+	size := 15
 
 	matrix := make([][]int, size)
 	for i := 0; i < size; i++ {

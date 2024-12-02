@@ -3,6 +3,7 @@ package methods
 import (
 	"fmt"
 	"salesmanstask/003/internal/models"
+	"salesmanstask/data"
 )
 
 func RemoveCellFromMatrixByIndex(mx [][]int, idxRow int, idxCol int) [][]int {
@@ -61,7 +62,7 @@ func FindInfinityCellCoords(mx [][]int) (rowInfName, colInfName int) {
 	for i := 1; i < len(mx); i++ {
 		for j := 1; j < len(mx[0]); j++ {
 			// fmt.Printf("mx[%d,%d]=%d\n", i, j, mx[i][j])
-			if mx[i][j] == -1 {
+			if mx[i][j] == data.Inf {
 				break
 			}
 			if j == len(mx[0])-1 {
@@ -71,7 +72,38 @@ func FindInfinityCellCoords(mx [][]int) (rowInfName, colInfName int) {
 	}
 	for j := 0; j < len(mx[0]); j++ {
 		for i := 1; i < len(mx); i++ {
-			if mx[i][j] == -1 {
+			if mx[i][j] == data.Inf {
+				break
+			}
+			if i == len(mx)-1 {
+				colInfName = j
+			}
+		}
+	}
+	return
+}
+
+func FindInfinityCellCoordsNew(mx [][]int) (rowInfName, colInfName int) {
+	if models.Debug {
+		PrintMatrix(mx)
+		fmt.Println("удаляем строку и столбец   ^^^")
+		fmt.Println("___________________________________________________")
+	}
+
+	for i := 1; i < len(mx); i++ {
+		for j := 1; j < len(mx[0]); j++ {
+			// fmt.Printf("mx[%d,%d]=%d\n", i, j, mx[i][j])
+			if mx[i][j] == data.Inf {
+				break
+			}
+			if j == len(mx[0])-1 {
+				rowInfName = i
+			}
+		}
+	}
+	for j := 0; j < len(mx[0]); j++ {
+		for i := 1; i < len(mx); i++ {
+			if mx[i][j] == data.Inf {
 				break
 			}
 			if i == len(mx)-1 {

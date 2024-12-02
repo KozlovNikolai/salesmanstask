@@ -2,6 +2,7 @@ package methods
 
 import (
 	"fmt"
+	"salesmanstask/data"
 
 	"github.com/fatih/color"
 )
@@ -27,7 +28,7 @@ func PrintMatrixColor(mx [][]int) {
 		for j := 0; j < len(mx[i]); j++ {
 			if i == 0 || j == 0 {
 				fmt.Printf(blue("\t%d"), mx[i][j])
-			} else if mx[i][j] == -1 {
+			} else if mx[i][j] == data.Inf {
 				// fmt.Printf(black("%-4d"), mx[i][j])
 				fmt.Printf(black("\t%d"), mx[i][j])
 			} else {
@@ -62,8 +63,8 @@ func PrintMatrix(mx [][]int) {
 		for j := 0; j < len(mx[i]); j++ {
 			if i == 0 || j == 0 {
 				fmt.Printf(green("\t%d"), mx[i][j])
-			} else if mx[i][j] == -1 {
-				fmt.Printf(black("\t%d"), mx[i][j])
+			} else if mx[i][j] == data.Inf {
+				fmt.Printf(black("\t%s"), "inf")
 			} else {
 				if mx[i][j] == 0 {
 					fmt.Printf(red("\t%d"), mx[i][j])

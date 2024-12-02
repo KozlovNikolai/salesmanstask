@@ -17,12 +17,8 @@ func main() {
 	for i := range data.Matrixes {
 		fmt.Printf("\n#########################\n#\tMatrix: %d\t#\n#########################\n", i)
 		t := time.Now()
-		//Calculate(data.Matrixes[i], 0)
-		// for j := range data.Matrixes[i] {
-		// 	out := j + 1
-		out := 0
+		out := 2
 		Calculate(data.Matrixes[i], out)
-		// }
 
 		ts := time.Since(t)
 		fmt.Printf("Time latency: %v\n", ts)
@@ -34,8 +30,8 @@ func Calculate(mx [][]int, out int) {
 	// устанавливаем город отправления
 	if out != 0 {
 		for i := range mx {
-			if mx[i][out-1] != -1 {
-				mx[i][out-1] = 1000000
+			if mx[i][out-1] != data.Inf {
+				mx[i][out-1] = 0
 			}
 
 		}
@@ -49,10 +45,13 @@ func Calculate(mx [][]int, out int) {
 		fmt.Println("____________________________________________________________________________")
 	}
 
-	var mtr [][]int
-	mtr, models.LbtfRoot = methods.MatrixConversion(matrixOriginal)
+	//var mtr [][]int
+	// mtr, models.LbtfRoot = methods.MatrixConversion(matrixOriginal)
+
+	models.MxRoot, models.LbtfRoot = methods.MatrixConversion(matrixOriginal)
 	if Debug {
-		methods.PrintMatrix(mtr)
+		// methods.PrintMatrix(mtr)
+		methods.PrintMatrix(models.MxRoot)
 		fmt.Printf("H_root = %d\n", models.LbtfRoot)
 		fmt.Println("приведенная матрица    ^^^")
 		fmt.Println("____________________________________________________________________________")
@@ -78,7 +77,8 @@ func Calculate(mx [][]int, out int) {
 			fmt.Println("###############################  NEW BRANCH #############################")
 		}
 
-		ok := iteration.Iteration(mtr, bitree.BT.RootNode)
+		// ok := iteration.Iteration(mtr, bitree.BT.RootNode)
+		ok := iteration.Iteration(models.MxRoot, bitree.BT.RootNode)
 		if ok {
 			// weight := 0
 			fmt.Printf("Current Q: %d\n", bitree.BT.Q)
@@ -90,16 +90,26 @@ func Calculate(mx [][]int, out int) {
 				toursArray = append(toursArray, bitree.BT.Result.Tour...)
 
 			}
-			mtr, bitree.BT.CurrentNode, weight = findInBack()
-			if mtr == nil {
-				fmt.Printf("!!! matrix is NIL !!!\n")
+			// mtr, bitree.BT.CurrentNode, weight = findInBack()
+			var row, col int
+			bitree.BT.CurrentNode, weight, row, col = findInBack()
+			fmt.Printf("findBack - current Node: %v, weight: %d, row: %d, col: %d\n", bitree.BT.CurrentNode, weight, row, col)
+			// if mtr == nil {
+			if bitree.BT.CurrentNode == nil {
+				fmt.Printf("!!! current node is NIL !!!\n")
 				break
 			}
-			if bitree.BT.RootNode == nil {
-				fmt.Printf("!!! new root Node is NIL !!!\n")
+			if weight == 0 {
+				fmt.Printf("!!! weight is Null !!!\n")
+				break
+			}
+			if row == 0 || col == 0 {
+				fmt.Printf("!!! Row or Col is Null !!!\n")
 				break
 			}
 			models.LbtfRoot = weight
+
+			models.MxRoot[row][col] = data.Inf
 		} else {
 			fmt.Printf("NOT OK !!!\n")
 			break
@@ -116,7 +126,7 @@ func Calculate(mx [][]int, out int) {
 			for _, v := range bitree.BT.Result.Back {
 				fmt.Printf("W:%d, %s(%d,%d), id: %d\n", v.W, v.Sign, v.Out, v.In, v.ID)
 			}
-			fmt.Println("###############################  stop branch #############################")
+			fmt.Println("##########################################################################")
 			bitree.PrintTree(bitree.BT.RootNode)
 			fmt.Println("###############################  stop branch #############################")
 			fmt.Printf("\ntour with Q: %d\n", bitree.BT.Q)
@@ -136,7 +146,7 @@ func Calculate(mx [][]int, out int) {
 	rt := make(map[int]int)
 	fmt.Printf("\nResult tour with Q: %d\n", bitree.BT.Q)
 	for _, v := range toursArray {
-		fmt.Printf("ID:%d, W:%d, (%d,%d)\n", v.ID, v.W, v.Out, v.In)
+		fmt.Printf("ID:%d, W:%d, %s(%d,%d)\n", v.ID, v.W, v.Sign, v.Out, v.In)
 		rt[v.Out] = v.In
 	}
 	temp := 1
@@ -146,8 +156,10 @@ func Calculate(mx [][]int, out int) {
 	fmt.Printf("\nГород отправления: %d\n", temp)
 	sum := 0
 	for i := 0; i < len(rt); i++ {
-		fmt.Printf("(%d,%d),Cost:%d\n", temp, rt[temp], bitree.BT.Result.Back[0].Mxs[temp][rt[temp]])
-		sum += bitree.BT.Result.Back[0].Mxs[temp][rt[temp]]
+		// fmt.Printf("(%d,%d),Cost:%d\n", temp, rt[temp], bitree.BT.Result.Back[0].Mxs[temp][rt[temp]])
+		fmt.Printf("(%d,%d),Cost:%d\n", temp, rt[temp], matrixOriginal[temp][rt[temp]])
+		// sum += bitree.BT.Result.Back[0].Mxs[temp][rt[temp]]
+		sum += matrixOriginal[temp][rt[temp]]
 		temp = rt[temp]
 	}
 	fmt.Printf("Sum: %d\n", sum)
@@ -170,7 +182,7 @@ func Calculate(mx [][]int, out int) {
 	}
 	//	bitree.PrintTree(bitree.BT.RootNode)
 	if models.Debug {
-		printAllNodes()
+		//	printAllNodes()
 	}
 }
 
@@ -178,12 +190,14 @@ func printAllNodes() {
 	fmt.Println("Все узлы Маршрута:")
 	for _, v := range bitree.BT.Result.Tour {
 		fmt.Printf("W:%d, %s(%d,%d), id: %d\n", v.W, v.Sign, v.Out, v.In, v.ID)
-		methods.PrintMatrix(v.Mxs)
+		// methods.PrintMatrix(v.Mxs)
+		methods.PrintMatrix(models.MxRoot)
 	}
 	fmt.Println("Все отложенные узлы:")
 	for _, v := range bitree.BT.Result.Back {
 		fmt.Printf("W:%d, %s(%d,%d), id: %d\n", v.W, v.Sign, v.Out, v.In, v.ID)
-		methods.PrintMatrix(v.Mxs)
+		// methods.PrintMatrix(v.Mxs)
+		methods.PrintMatrix(models.MxRoot)
 	}
 }
 
@@ -211,7 +225,40 @@ func printAllNodes() {
 // 	return nil, nil, 0
 // }
 
-func findInBack() ([][]int, *bitree.TreeNode, int) {
+// func findInBack() ([][]int, *bitree.TreeNode, int) {
+// 	fmt.Printf("Поиск в отложенных узлах: %d штук\n", len(bitree.BT.Result.Back))
+// 	minWeight := math.MaxInt
+// 	var n int
+// 	for i := 1; i < len(bitree.BT.Result.Back); i++ {
+
+// 		if bitree.BT.Result.Back[i].W < minWeight {
+// 			minWeight = bitree.BT.Result.Back[i].W
+// 			n = i
+// 		}
+// 	}
+
+// 	if bitree.BT.Q > bitree.BT.Result.Back[n].W {
+// 		fmt.Printf("Найдено в отложенных:  W:%d, %s(%d,%d), id: %d\n",
+// 			bitree.BT.Result.Back[n].W,
+// 			bitree.BT.Result.Back[n].Sign,
+// 			bitree.BT.Result.Back[n].Out,
+// 			bitree.BT.Result.Back[n].In,
+// 			bitree.BT.Result.Back[n].ID)
+
+// 		matrix := bitree.BT.Result.Back[n].Mxs
+// 		node := bitree.BT.Result.Back[n].Node
+// 		w := bitree.BT.Result.Back[n].W
+
+// 		bitree.BT.Result.Back[n] = bitree.BT.Result.Back[len(bitree.BT.Result.Back)-1]
+// 		bitree.BT.Result.Back = bitree.BT.Result.Back[:len(bitree.BT.Result.Back)-1]
+// 		bitree.BT.Result.Tour = bitree.BT.Result.Tour[:0]
+// 		return matrix, node, w
+// 	}
+
+// 	return nil, nil, 0
+// }
+
+func findInBack() (*bitree.TreeNode, int, int, int) {
 	fmt.Printf("Поиск в отложенных узлах: %d штук\n", len(bitree.BT.Result.Back))
 	minWeight := math.MaxInt
 	var n int
@@ -231,15 +278,15 @@ func findInBack() ([][]int, *bitree.TreeNode, int) {
 			bitree.BT.Result.Back[n].In,
 			bitree.BT.Result.Back[n].ID)
 
-		matrix := bitree.BT.Result.Back[n].Mxs
 		node := bitree.BT.Result.Back[n].Node
 		w := bitree.BT.Result.Back[n].W
-
+		row := bitree.BT.Result.Back[n].Out
+		col := bitree.BT.Result.Back[n].In
 		bitree.BT.Result.Back[n] = bitree.BT.Result.Back[len(bitree.BT.Result.Back)-1]
 		bitree.BT.Result.Back = bitree.BT.Result.Back[:len(bitree.BT.Result.Back)-1]
 		bitree.BT.Result.Tour = bitree.BT.Result.Tour[:0]
-		return matrix, node, w
+		return node, w, row, col
 	}
 
-	return nil, nil, 0
+	return nil, 0, 0, 0
 }

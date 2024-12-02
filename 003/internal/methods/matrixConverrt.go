@@ -2,6 +2,7 @@ package methods
 
 import (
 	"math"
+	"salesmanstask/data"
 )
 
 func MatrixConversion(mx [][]int) ([][]int, int) {
@@ -50,7 +51,7 @@ func rowsConversion(mx [][]int) [][]int {
 		// идем по ячейкам строки исключая заголовок строки
 		for j := 1; j < cols; j++ {
 			// находим минимум в строке
-			if mx[i][j] >= 0 {
+			if mx[i][j] < data.Inf {
 				if mx[i][j] < min {
 					min = mx[i][j]
 				}
@@ -58,7 +59,7 @@ func rowsConversion(mx [][]int) [][]int {
 		}
 		// вычитаем найденный минимум из каждого элемента строки, исключая заголовок
 		for j := 1; j < cols; j++ {
-			if mx[i][j] >= 0 {
+			if mx[i][j] < data.Inf {
 				resultMx[i][j] = mx[i][j] - min
 			} else {
 				resultMx[i][j] = mx[i][j]
@@ -91,15 +92,18 @@ func columnsConversion(mx [][]int) ([][]int, int) {
 		min := math.MaxInt
 		// идем по ячейкам колонки исключая заголовок колонки
 		for i := 1; i < rows; i++ {
-			if mx[i][j] >= 0 {
+			if mx[i][j] < data.Inf {
 				if mx[i][j] < min {
 					min = mx[i][j]
 				}
 			}
 		}
+		// if min == math.MaxInt {
+		// 	min = 0
+		// }
 		// вычитаем найденный минимум из каждого элемента колонки, исключая заголовок
 		for i := 1; i < rows; i++ {
-			if mx[i][j] >= 0 {
+			if mx[i][j] < data.Inf {
 				resultMx[i][j] = mx[i][j] - min
 			} else {
 				resultMx[i][j] = mx[i][j]
@@ -108,6 +112,7 @@ func columnsConversion(mx [][]int) ([][]int, int) {
 		// записываем результат в конец колонки
 		resultMx[rows][j] = min
 	}
+	// PrintMatrix(resultMx)
 	// Считаем сумму коэффициентов строк и колонок
 	var sum int
 	for i := 1; i < rows; i++ {
