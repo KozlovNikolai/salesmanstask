@@ -3,9 +3,9 @@ package app
 import "fmt"
 
 func Run(s *Store) {
-	//for {
-	Iteration(s)
-	//}
+	for !s.IsSolved {
+		Iteration(s)
+	}
 }
 
 func Iteration(s *Store) {
@@ -46,6 +46,8 @@ func Iteration(s *Store) {
 			if ok {
 				fmt.Println("*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_")
 				fmt.Println("*_^_*_^_*_^_*_^_*_^_*_^   РЕШЕНО   _*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_")
+				s.IsSolved = true
+				return
 			}
 			PrintMatrix(mxr)
 			h := GetH(mxr, rowName, colName, s)
@@ -141,62 +143,83 @@ func MarkInfinityCell(mx [][]int, rowName, colName int, s *Store) ([][]int, bool
 	}
 	PrintMapSort(list)
 
+	for j := 1; j < len(mx[0]); j++ {
+		name := mx[0][j]
+		count := 0
+		for {
+			count++
+			value, ok := list[name]
+			if !ok {
+				break
+			}
+			for i := 1; i < len(mx); i++ {
+				if mx[i][0] == value {
+					if count == (len(s.Tree[0].MX) - 2) {
+						return mx, true
+					}
+					mx[i][j] = Inf
+				}
+			}
+			name = value
+		}
+	}
+
 	// создаем словарь с количеством вхождений узлов в тур.
 	// количество вхождений может быть 1 или 2 (других быть не может)
-	count := 0 // счетчик парных вхождений
+	// count := 0 // счетчик парных вхождений
 
-	dict := make(map[int]struct {
-		cnt int
-		dir string
-	})
-	for key, val := range list {
-		v, ok := dict[key]
-		if ok {
-			count++
-		}
-		dict[key] = struct {
-			cnt int
-			dir string
-		}{v.cnt + 1, "out"}
-		v, ok = dict[val]
-		if ok {
-			count++
-		}
-		dict[val] = struct {
-			cnt int
-			dir string
-		}{v.cnt + 1, "in"}
-	}
+	// dict := make(map[int]struct {
+	// 	cnt int
+	// 	dir string
+	// })
+	// for key, val := range list {
+	// 	v, ok := dict[key]
+	// 	if ok {
+	// 		count++
+	// 	}
+	// 	dict[key] = struct {
+	// 		cnt int
+	// 		dir string
+	// 	}{v.cnt + 1, "out"}
+	// 	v, ok = dict[val]
+	// 	if ok {
+	// 		count++
+	// 	}
+	// 	dict[val] = struct {
+	// 		cnt int
+	// 		dir string
+	// 	}{v.cnt + 1, "in"}
+	// }
 	// если счетчик парных вхождений равен длине списка лучей, значит нашли ответ, TRUE
-	if count == len(list) {
-		return mx, true
-	}
+	// if count == len(list) {
+	// 	return mx, true
+	// }
 
 	// если входные параметры имеют по одному вхождению, то просто переворачиваем их
 	// и преобразуем в индексы текущей таблицы
-	var rowIdx, colIdx int
-	if dict[rowName].cnt == 1 && dict[colName].cnt == 1 {
-		rowIdx, colIdx, _ = IdxByName(mx, colName, rowName)
-		mx[rowIdx][colIdx] = Inf
-		return mx, false
-	}
+	// var rowIdx, colIdx int
+	// if dict[rowName].cnt == 1 && dict[colName].cnt == 1 {
+	// 	rowIdx, colIdx, _ = IdxByName(mx, colName, rowName)
+	// 	mx[rowIdx][colIdx] = Inf
+	// 	return mx, false
+	// }
 
-	// var row, col, temp int
-	for k, v := range dict {
-		fmt.Printf("key:%d, val:%+v\n", k, v)
-	}
+	// // var row, col, temp int
+	// for k, v := range dict {
+	// 	fmt.Printf("key:%d, val:%+v\n", k, v)
+	// }
 
-	var row, col int
-	for item, value := range dict {
-		if value.cnt == 1 && value.dir == "out" {
-			col = item
-		} else if value.cnt == 1 && value.dir == "in" {
-			row = item
-		}
-	}
+	// var row, col int
+	// for item, value := range dict {
+	// 	if value.cnt == 1 && value.dir == "out" {
+	// 		col = item
+	// 	} else if value.cnt == 1 && value.dir == "in" {
+	// 		row = item
+	// 	}
+	// }
 
-	rowIdx, colIdx, _ = IdxByName(mx, row, col)
-	mx[rowIdx][colIdx] = Inf
+	// rowIdx, colIdx, _ = IdxByName(mx, row, col)
+	// mx[rowIdx][colIdx] = Inf
 	return mx, false
 }
 

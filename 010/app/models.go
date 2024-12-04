@@ -31,6 +31,7 @@ type Store struct {
 	Leaves        Leaves
 	CurrentNodeID int
 	NextID        int
+	IsSolved      bool
 }
 
 func NewStore(mx [][]int, lb int) *Store {
