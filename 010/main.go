@@ -17,11 +17,11 @@ func main() {
 	// создаем хранилище узлов
 	store := app.NewStore(app.GetRootMatrix(), lb)
 	output(store)
-	for i := 0; i < 6; i++ {
-		fmt.Printf("%d ##########################################################################\n", i)
-		app.Run(store)
-		output(store)
-	}
+	//for i := 0; i < 17; i++ {
+	// fmt.Printf("%d ##########################################################################\n", i)
+	app.Run(store)
+	// output(store)
+	//}
 }
 
 func output(store *app.Store) {
