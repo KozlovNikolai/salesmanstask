@@ -1,6 +1,7 @@
 package methods
 
 import (
+	"fmt"
 	"math"
 	"salesmanstask/data"
 )
@@ -8,14 +9,9 @@ import (
 func MatrixConversion(mx [][]int) ([][]int, int) {
 	rc := rowsConversion(mx)
 	cc, sum := columnsConversion(rc)
-	// PrintMatrixColor(cc)
-	// fmt.Println()
-
-	// // PrintMatrix(cc)
-	// fmt.Println("приведенная матрица    ^^^")
-	// fmt.Println("____________________________________________________________________________")
 
 	matrix := cutFromConversionMatrix(cc)
+	fmt.Println("FUNC MATRIXCONVERSION IS ENDED.")
 	return matrix, sum
 }
 
@@ -68,6 +64,7 @@ func rowsConversion(mx [][]int) [][]int {
 		// записываем результат в конец строки
 		resultMx[i][cols] = min
 	}
+	//PrintMatrix(resultMx)
 	return resultMx
 }
 
