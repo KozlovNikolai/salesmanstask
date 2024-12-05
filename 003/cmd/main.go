@@ -17,7 +17,7 @@ func main() {
 	for i := range data.Matrixes {
 		fmt.Printf("\n#########################\n#\tMatrix: %d\t#\n#########################\n", i)
 		t := time.Now()
-		out := 2
+		out := 0
 		Calculate(data.Matrixes[i], out)
 
 		ts := time.Since(t)
