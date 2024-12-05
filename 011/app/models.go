@@ -78,15 +78,20 @@ func (s *Store) AddParentsWeight(nodeID int) int {
 func (s *Store) FindMinWeightLeaf() {
 	minWeightNodeIdx := 0
 	minWeight := Inf
-	for i := range s.Leaves.NodeIDs {
-		if s.Tree[i].W < minWeight {
-			minWeight = s.Tree[i].W
-			minWeightNodeIdx = i
-		}
-	}
+	s.funcHelp(&minWeight, &minWeightNodeIdx)
 	s.Leaves.MinWeightID = minWeightNodeIdx
 	s.Leaves.MinWeight = minWeight
 	s.CurrentNodeID = minWeightNodeIdx
+}
+
+func (s *Store) funcHelp(minWeight, minWeightNodeIdx *int) {
+	for i := range s.Leaves.NodeIDs {
+		w := s.Tree[i].W
+		if w < *minWeight {
+			*minWeight = w
+			*minWeightNodeIdx = i
+		}
+	}
 }
 
 func (s *Store) AddNode(mx [][]int, out, in, w int) int {
