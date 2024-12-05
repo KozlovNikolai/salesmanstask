@@ -7,28 +7,29 @@ import (
 )
 
 func main() {
-	app.Debug = true
-	// устанавливаем стартовую точку
-	start := 2
-	if start != 0 {
-		app.SetStart(app.Matrixes[0], start)
+	app.Debug = false
+	for i := range app.Matrixes {
+		// устанавливаем стартовую точку
+		start := 0
+		app.SetStart(app.Matrixes[i], start)
+
+		// именуем строки и столбцы
+		app.SetNaming(app.Matrixes[i])
+
+		app.PrintMatrix(app.GetRootMatrix())
+
+		// находим нижнюю границу
+		lb := app.GetLB(app.GetRootMatrix())
+
+		// создаем хранилище узлов
+		store := app.NewStore(app.GetRootMatrix(), lb, start)
+		if app.Debug {
+			output(store)
+		}
+
+		app.Run(store)
 	}
 
-	// именуем строки и столбцы
-	app.SetNaming(app.Matrixes[0])
-
-	app.PrintMatrix(app.GetRootMatrix())
-
-	// находим нижнюю границу
-	lb := app.GetLB(app.GetRootMatrix())
-
-	// создаем хранилище узлов
-	store := app.NewStore(app.GetRootMatrix(), lb)
-	if app.Debug {
-		output(store)
-	}
-
-	app.Run(store)
 }
 
 func output(store *app.Store) {

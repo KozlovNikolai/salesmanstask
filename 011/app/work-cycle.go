@@ -1,11 +1,21 @@
 package app
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func Run(s *Store) {
+	t := time.Now()
+	cnt := 0
 	for !s.IsSolved {
+		cnt++
+		fmt.Printf("\riteration: %d, ", cnt)
 		Iteration(s)
+
 	}
+	ts := time.Since(t)
+	fmt.Printf("Время выполнения: %v\n", ts)
 }
 
 func Iteration(s *Store) {
@@ -46,11 +56,11 @@ func Iteration(s *Store) {
 				fmt.Printf("Маркируем бесконечную дугу\n")
 			}
 
-			_, ok := MarkInfinityCell(mxr, rowName, colName, s)
-			if ok {
-				fmt.Println("*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_")
-				fmt.Println("*_^_*_^_*_^_*_^_*_^_*_^   РЕШЕНО   _*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_")
-
+			_, res := MarkInfinityCell(mxr, rowName, colName, s)
+			if res != nil {
+				// fmt.Println("*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_")
+				// fmt.Println("*_^_*_^_*_^_*_^_*_^_*_^   РЕШЕНО   _*_^_*_^_*_^_*_^_*_^_*_^_*_^_*_^_")
+				fmt.Printf("%v, W:%d\n", res, s.Tree[s.CurrentNodeID].W)
 				s.IsSolved = true
 				return
 			}
@@ -103,14 +113,14 @@ func RemoveColFromMatrixByIndex(mx [][]int, nameIndex int) [][]int {
 	return resultMx
 }
 
-func MarkInfinityCell(mx [][]int, rowName, colName int, s *Store) ([][]int, bool) {
+func MarkInfinityCell(mx [][]int, rowName, colName int, s *Store) ([][]int, []int) {
 	// если текущий узел - корень дерева, то просто меняем имена строки и столбца между собой
 	// в корневой матрице имена столбцов всегда совпадают с индексами массива
 	parentNodeID := s.Tree[s.CurrentNodeID].ParentID
 	if s.CurrentNodeID == 0 {
 		rowIdx, colIdx, _ := IdxByName(mx, colName, rowName)
 		mx[rowIdx][colIdx] = Inf
-		return mx, false
+		return mx, nil
 	}
 
 	// создаем список лучей всех вышестоящих узлов, включая текущий
@@ -139,8 +149,8 @@ func MarkInfinityCell(mx [][]int, rowName, colName int, s *Store) ([][]int, bool
 				if mx[i][0] == value {
 					if count == (len(s.Tree[0].MX) - 2) {
 						list[mx[1][0]] = mx[0][1]
-
-						return mx, true
+						result := MapToArray(list, s.Start)
+						return mx, result
 					}
 					mx[i][j] = Inf
 				}
@@ -149,7 +159,7 @@ func MarkInfinityCell(mx [][]int, rowName, colName int, s *Store) ([][]int, bool
 		}
 	}
 
-	return mx, false
+	return mx, nil
 }
 
 func PrintMap(m map[int]int) {
@@ -160,7 +170,11 @@ func PrintMap(m map[int]int) {
 
 func MapToArray(m map[int]int, start int) []int {
 	result := make([]int, len(m))
-	cnt := 0
+	cnt := 1
+	if start == 0 {
+		start = 1
+	}
+	result[0] = start
 	for cnt < len(m) {
 		result[cnt] = m[start]
 		start = m[start]

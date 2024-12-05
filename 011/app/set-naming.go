@@ -1,5 +1,7 @@
 package app
 
+import "log"
+
 func SetNaming(mx [][]int) {
 	lenRows := len(mx)
 	lenCols := len(mx[0])
@@ -25,5 +27,14 @@ func SetNaming(mx [][]int) {
 }
 
 func SetStart(mx [][]int, start int) {
-
+	if start < 0 || start > len(mx) {
+		log.Fatalf("start point: %d out of range: 0...%d", start, len(mx))
+	}
+	if start != 0 {
+		for i := range mx {
+			if mx[i][start-1] != Inf {
+				mx[i][start-1] = 0
+			}
+		}
+	}
 }

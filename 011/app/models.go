@@ -34,9 +34,10 @@ type Store struct {
 	CurrentNodeID int
 	NextID        int
 	IsSolved      bool
+	Start         int
 }
 
-func NewStore(mx [][]int, lb int) *Store {
+func NewStore(mx [][]int, lb, start int) *Store {
 	return &Store{
 		Tree: map[int]*Node{0: {
 			ID:       0,
@@ -54,6 +55,7 @@ func NewStore(mx [][]int, lb int) *Store {
 		},
 		CurrentNodeID: 0,
 		NextID:        1,
+		Start:         start,
 	}
 }
 
