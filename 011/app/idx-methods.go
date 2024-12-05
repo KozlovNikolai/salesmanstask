@@ -26,18 +26,6 @@ func IdxByName(m [][]int, rowName, colName int) (rowIdx, colIdx int, ok bool) {
 	return rowIdx, colIdx, true
 }
 
-func NameByIdx(mx [][]int, rowIdx, colIdx int) (rowName, colName int, ok bool) {
-	if rowIdx > len(mx)-1 {
-		fmt.Printf("не могу получить имя по индексу строки: %d\n", rowIdx)
-		return 0, 0, false
-	}
-	if colIdx > len(mx[0])-1 {
-		fmt.Printf("не могу получить имя по индексу колонки: %d\n", colIdx)
-		return 0, 0, false
-	}
-	return mx[rowIdx][0], mx[0][colIdx], true
-}
-
 func ColNameByIdx(mx [][]int, colIdx int) (colName int, ok bool) {
 	if colIdx > len(mx[0])-1 {
 		fmt.Printf("не могу получить имя по индексу колонки: %d\n", colIdx)

@@ -22,7 +22,6 @@ func GetLB(mx [][]int) int {
 
 func GetH(mx [][]int, rowName, colName int, s *Store) int {
 	rootMx := GetRootMatrix()
-	_ = rowName
 
 	count := len(mx)
 	var sum int
@@ -36,7 +35,7 @@ func GetH(mx [][]int, rowName, colName int, s *Store) int {
 		}
 		sum += min
 	}
-	// nodeID := s.Tree[s.CurrentNodeID].ParentID
+
 	nodeID := s.CurrentNodeID
 	for nodeID != 0 {
 		sum += rootMx[s.Tree[nodeID].Out][s.Tree[nodeID].In]
@@ -45,7 +44,6 @@ func GetH(mx [][]int, rowName, colName int, s *Store) int {
 	if nodeID == 0 {
 		sum += rootMx[rowName][colName]
 	}
-	// sum = sum + s.AddParentsWeight(s.CurrentNodeID)
 
 	return sum
 }

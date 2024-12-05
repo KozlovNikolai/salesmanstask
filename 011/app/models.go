@@ -1,5 +1,7 @@
 package app
 
+var Debug bool
+
 var rootMatrix [][]int
 
 func SetRootMatrix(mx [][]int) {

@@ -23,3 +23,7 @@ func SetNaming(mx [][]int) {
 
 	SetRootMatrix(mmx)
 }
+
+func SetStart(mx [][]int, start int) {
+
+}

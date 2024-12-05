@@ -2,13 +2,21 @@ package main
 
 import (
 	"fmt"
-	"salesmanstask/010/app"
+	"salesmanstask/011/app"
 	"slices"
 )
 
 func main() {
+	app.Debug = true
+	// устанавливаем стартовую точку
+	start := 2
+	if start != 0 {
+		app.SetStart(app.Matrixes[0], start)
+	}
+
 	// именуем строки и столбцы
 	app.SetNaming(app.Matrixes[0])
+
 	app.PrintMatrix(app.GetRootMatrix())
 
 	// находим нижнюю границу
@@ -16,12 +24,11 @@ func main() {
 
 	// создаем хранилище узлов
 	store := app.NewStore(app.GetRootMatrix(), lb)
-	output(store)
-	//for i := 0; i < 17; i++ {
-	// fmt.Printf("%d ##########################################################################\n", i)
+	if app.Debug {
+		output(store)
+	}
+
 	app.Run(store)
-	// output(store)
-	//}
 }
 
 func output(store *app.Store) {
@@ -38,19 +45,6 @@ func output(store *app.Store) {
 			store.Tree[key].W,
 		)
 	}
-	// for key, value := range store.Tree {
-	// 	// fmt.Printf("Key: %d, Node: %+v\n", key, value)
-	// 	fmt.Printf(
-	// 		"Key: %d, NodeID: %d, Name: %s, ParID: %d, (%d,%d) W: %d\n",
-	// 		key,
-	// 		value.ID,
-	// 		value.Name,
-	// 		value.ParentID,
-	// 		value.Out,
-	// 		value.In,
-	// 		value.W,
-	// 	)
-	// }
 	fmt.Println()
 
 	fmt.Println("Только листья:")
@@ -71,10 +65,6 @@ func output(store *app.Store) {
 
 	fmt.Printf("Текущий узел: %+v\n", store.Tree[store.CurrentNodeID])
 
-	// for i, v := range store.Tree {
-	// 	fmt.Printf("Node ID:%d, Name:%s, (%d,%d), W:%d, ParID:%d\n", i, v.Name, v.Out, v.In, v.W, v.ParentID)
-	// 	app.PrintMatrix(v.MX)
-	// }
 	for i := 0; i < len(store.Tree); i++ {
 		v := store.Tree[i]
 		fmt.Printf("Node ID:%d, Name:%s, (%d,%d), W:%d, ParID:%d\n", i, v.Name, v.Out, v.In, v.W, v.ParentID)
