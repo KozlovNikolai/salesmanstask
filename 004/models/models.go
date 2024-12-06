@@ -11,6 +11,7 @@ type CellWithMaxMin struct {
 }
 
 var LowWeightLimit int
+var LowerWeightFound int
 var Debug bool
 var MxRoot [][]int
 
@@ -30,6 +31,7 @@ func (nof *NamesOfIndexes) GetRowIdx(name int) int {
 	}
 	return -1
 }
+
 func (nof *NamesOfIndexes) GetRowName(index int) int {
 	nof.mu.Lock()
 	defer nof.mu.Unlock()
@@ -46,6 +48,7 @@ func (nof *NamesOfIndexes) GetColIdx(name int) int {
 	}
 	return -1
 }
+
 func (nof *NamesOfIndexes) GetColName(index int) int {
 	nof.mu.Lock()
 	defer nof.mu.Unlock()
@@ -87,16 +90,3 @@ func (nof *NamesOfIndexes) RemoveColByIndex(index int) (int, *NamesOfIndexes) {
 
 	return name, nof
 }
-
-// type Results struct {
-// 	Tour []bitree.Node
-// 	Back []bitree.Node
-// }
-
-// type Node struct {
-// 	ID   int
-// 	W    int
-// 	In   int
-// 	Out  int
-// 	Node *bitree.TreeNode
-// }

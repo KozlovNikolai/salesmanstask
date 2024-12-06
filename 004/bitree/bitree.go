@@ -124,6 +124,9 @@ func (bt *BiTree) CreateLeftNode(w, o, i int, setCurrent bool) {
 	}
 
 	bt.Count++
+	if models.Debug {
+		fmt.Println("________________________ Узел создан _______________________")
+	}
 }
 
 // func (bt *BiTree) CreateRightNode(mx [][]int, w, o, i int, setCurrent bool) {
@@ -151,6 +154,9 @@ func (bt *BiTree) CreateRightNode(w, o, i int, setCurrent bool) {
 	}
 
 	bt.Count++
+	if models.Debug {
+		fmt.Println("________________________ Узел создан _______________________")
+	}
 }
 
 // func (bt *BiTree) CreateLastNode(mx [][]int, w, o, i int) {
@@ -170,6 +176,9 @@ func (bt *BiTree) CreateLastNode(w, o, i int) {
 	bt.State[bt.Count] = bt.CurrentNode.Right
 	bt.Result.Tour = append(bt.Result.Tour, nd)
 	bt.Count++
+	if models.Debug {
+		fmt.Println("________________________ Узел создан _______________________")
+	}
 }
 
 // PrintInorder prints the elements in order

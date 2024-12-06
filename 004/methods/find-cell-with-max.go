@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"salesmanstask/004/models"
+	"salesmanstask/data"
 )
 
 // FindCellWithMaxЬшт ищет ячейку из нулевых ячеек, где
@@ -14,10 +15,10 @@ func FindCellWithMaxMin(mx [][]int) models.CellWithMaxMin {
 	colsLen := len(mx[0])
 
 	// создаем список значений нулевых ячеек размером минимум по количеству колонок
-	// list := make(map[nullCell]valsOfCell)
 	var minRow int
 	var minCol int
 	result := models.CellWithMaxMin{}
+
 	// идем по строкам исключая строку с заголовками
 	for i := 1; i < rowsLen; i++ {
 		// идем по элементам строки исключая заголовок строки
@@ -26,7 +27,6 @@ func FindCellWithMaxMin(mx [][]int) models.CellWithMaxMin {
 			if mx[i][j] == 0 {
 				// находим минимальное значение в строке
 				minRow = findMinFromArray(mx[i], j)
-
 				// создаем и заполняем массив значениями из колонки
 				colArr := make([]int, rowsLen)
 				for n := range mx {
@@ -34,12 +34,24 @@ func FindCellWithMaxMin(mx [][]int) models.CellWithMaxMin {
 				}
 				// находим минимальное значение в колонке
 				minCol = findMinFromArray(colArr, i)
-
 				if minCol+minRow > result.MaxSum {
 					result = models.CellWithMaxMin{
 						RowName: mx[i][0],
 						ColName: mx[0][j],
 						MaxSum:  minCol + minRow,
+					}
+				} else {
+					for indR := 1; indR < len(mx); indR++ {
+						for indC := 1; indC < len(mx[0]); indC++ {
+							if mx[indR][indC] == 0 {
+								result = models.CellWithMaxMin{
+									RowName: mx[indR][0],
+									ColName: mx[0][indC],
+									MaxSum:  minCol + minRow,
+								}
+							}
+
+						}
 					}
 				}
 			}
@@ -56,7 +68,7 @@ func FindCellWithMaxMin(mx [][]int) models.CellWithMaxMin {
 func findMinFromArray(arr []int, exclude int) int {
 	min := math.MaxInt
 	for i := 1; i < len(arr); i++ {
-		if i != exclude && arr[i] >= 0 && arr[i] < min {
+		if i != exclude && arr[i] < data.Inf && arr[i] < min {
 			min = arr[i]
 		}
 	}

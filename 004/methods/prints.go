@@ -2,6 +2,7 @@ package methods
 
 import (
 	"fmt"
+	"salesmanstask/004/bitree"
 	"salesmanstask/data"
 
 	"github.com/fatih/color"
@@ -76,4 +77,33 @@ func PrintMatrix(mx [][]int) {
 		fmt.Println()
 	}
 	fmt.Println()
+}
+
+func PrintArrayOfNodes(arr []bitree.Node) {
+	rt := make(map[int]int)
+	for _, v := range arr {
+		fmt.Printf("ID:%d, W:%d, %s(%d,%d)\n", v.ID, v.W, v.Sign, v.Out, v.In)
+		rt[v.Out] = v.In
+	}
+}
+
+func PrintResult(toursArray []bitree.Node, matrixNamed [][]int, out int) {
+	rt := make(map[int]int)
+	fmt.Printf("\nResult tour with Q: %d\n", bitree.BT.CurWeight)
+	for _, v := range toursArray {
+		fmt.Printf("ID:%d, W:%d, %s(%d,%d)\n", v.ID, v.W, v.Sign, v.Out, v.In)
+		rt[v.Out] = v.In
+	}
+	temp := 1
+	if out != 0 {
+		temp = out
+	}
+	fmt.Printf("\nГород отправления: %d\n", temp)
+	sum := 0
+	for i := 0; i < len(rt); i++ {
+		fmt.Printf("(%d,%d),Cost:%d\n", temp, rt[temp], matrixNamed[temp][rt[temp]])
+		sum += matrixNamed[temp][rt[temp]]
+		temp = rt[temp]
+	}
+	fmt.Printf("Sum: %d\n", sum)
 }
