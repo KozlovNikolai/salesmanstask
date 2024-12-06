@@ -11,12 +11,14 @@ import (
 	"time"
 )
 
-var Debug = true
+var Debug = false
 
 func main() {
 	for i := range data.Matrixes {
-		fmt.Printf("\n#########################\n#\tMatrix: %d\t#\n#########################\n", i)
-		out := 0
+		if models.Debug {
+			fmt.Printf("\n#########################\n#\tMatrix: %d\t#\n#########################\n", i)
+		}
+		out := 1
 		setOut(data.Matrixes[i], out)
 		t := time.Now()
 		calculate(data.Matrixes[i], out)

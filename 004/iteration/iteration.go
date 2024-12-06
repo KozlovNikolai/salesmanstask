@@ -14,18 +14,24 @@ func IterationBranch() []bitree.Node {
 	var toursArray []bitree.Node
 	prevFoundWeight := math.MaxInt
 	weight := 0
-	fmt.Println("Строим ветвь")
+	if models.Debug {
+		fmt.Println("Строим ветвь")
+	}
 	// начинаем итерации создания ветвей:
 	for {
 		// начинаем итерации создания узлов:
-		fmt.Println("Матрица на входе в итератор:")
-		methods.PrintMatrix(models.MxRoot)
+		if models.Debug {
+			fmt.Println("Матрица на входе в итератор:")
+			methods.PrintMatrix(models.MxRoot)
+		}
 		matrix := bitree.CloneMx(models.MxRoot)
 		// ok := IterationNode(models.MxRoot, bitree.BT.RootNode)
 		ok := IterationNode(matrix, bitree.BT.RootNode)
 		if ok {
-			fmt.Printf("Current Weight: %d\n", bitree.BT.CurWeight)
-			fmt.Printf("Previous found Weight: %d\n", prevFoundWeight)
+			if models.Debug {
+				fmt.Printf("Current Weight: %d\n", bitree.BT.CurWeight)
+				fmt.Printf("Previous found Weight: %d\n", prevFoundWeight)
+			}
 			if bitree.BT.CurWeight < prevFoundWeight {
 				prevFoundWeight = bitree.BT.CurWeight
 				toursArray = toursArray[:0]
@@ -34,7 +40,9 @@ func IterationBranch() []bitree.Node {
 			var row, col int
 			// ищем в отложенных узлах узел с минимальным весом
 			bitree.BT.CurrentNode, weight, row, col = findInBack()
-			fmt.Printf("findBack - current Node: %v, weight: %d, row: %d, col: %d\n", bitree.BT.CurrentNode, weight, row, col)
+			if models.Debug {
+				fmt.Printf("findBack - current Node: %v, weight: %d, row: %d, col: %d\n", bitree.BT.CurrentNode, weight, row, col)
+			}
 			if bitree.BT.CurrentNode == nil {
 				fmt.Printf("!!! current node is NIL !!!\n")
 				break
@@ -52,7 +60,9 @@ func IterationBranch() []bitree.Node {
 			models.MxRoot, models.LowWeightLimit = methods.MatrixConversion(models.MxRoot)
 			models.LowWeightLimit = weight
 		} else {
-			fmt.Printf("NOT OK !!!\n")
+			if models.Debug {
+				fmt.Printf("NOT OK !!!\n")
+			}
 			break
 		}
 
@@ -70,11 +80,17 @@ func IterationNode(matrix [][]int, node *bitree.TreeNode) bool {
 		}
 		mx := Step(matrix)
 		if bitree.BT.CurWeight < bitree.BT.Result.Tour[len(bitree.BT.Result.Tour)-1].W {
-			fmt.Printf("\nBreak, вес лучшего маршрута:%d - меньше веса создаваемого\n маршрута: %d, дальше идти нет смысла.\n", bitree.BT.CurWeight, bitree.BT.Result.Tour[len(bitree.BT.Result.Tour)-1].W)
+			if models.Debug {
+
+				fmt.Printf("\nBreak, вес лучшего маршрута:%d - меньше веса создаваемого\n маршрута: %d, дальше идти нет смысла.\n", bitree.BT.CurWeight, bitree.BT.Result.Tour[len(bitree.BT.Result.Tour)-1].W)
+			}
 			return false
 		}
 		if len(mx) == 3 {
-			fmt.Printf("\nBreak, размер матрицы достиг: [%dx%d]\n", len(mx), len(mx[0]))
+			if models.Debug {
+
+				fmt.Printf("\nBreak, размер матрицы достиг: [%dx%d]\n", len(mx), len(mx[0]))
+			}
 			EndingBranch(mx)
 			// сохраняем найденный лучший вес и выходим
 			bitree.BT.CurWeight = models.LowWeightLimit
@@ -85,8 +101,11 @@ func IterationNode(matrix [][]int, node *bitree.TreeNode) bool {
 }
 
 func Step(mc [][]int) [][]int {
-	fmt.Println("Матрица на вход в STEP:")
-	methods.PrintMatrix(mc)
+	if models.Debug {
+
+		fmt.Println("Матрица на вход в STEP:")
+		methods.PrintMatrix(mc)
+	}
 	// ищем ячейку по максимальной сумме минимумов строк и столбцов нулевых ячеек:
 	nextNode := methods.FindCellWithMaxMin(mc)
 	if models.Debug {
@@ -162,8 +181,11 @@ func markInfinityCells(mx [][]int, rowName, colName int) {
 }
 
 func EndingBranch(mx [][]int) {
-	fmt.Println("Ending branch matrix:")
-	methods.PrintMatrix(mx)
+	if models.Debug {
+		fmt.Println("Ending branch matrix:")
+		methods.PrintMatrix(mx)
+
+	}
 	for i := 1; i < len(mx); i++ {
 		for j := 1; j < len(mx[0]); j++ {
 			if mx[i][j] == 0 {
@@ -180,7 +202,10 @@ func EndingBranch(mx [][]int) {
 // }
 
 func findInBack() (*bitree.TreeNode, int, int, int) {
-	fmt.Printf("Поиск в отложенных узлах: %d штук\n", len(bitree.BT.Result.Back))
+	if models.Debug {
+
+		fmt.Printf("Поиск в отложенных узлах: %d штук\n", len(bitree.BT.Result.Back))
+	}
 	minWeight := math.MaxInt
 	var n int
 	for i := 1; i < len(bitree.BT.Result.Back); i++ {
@@ -192,12 +217,15 @@ func findInBack() (*bitree.TreeNode, int, int, int) {
 	}
 
 	if bitree.BT.CurWeight > bitree.BT.Result.Back[n].W {
-		fmt.Printf("Найдено в отложенных:  W:%d, %s(%d,%d), id: %d\n",
-			bitree.BT.Result.Back[n].W,
-			bitree.BT.Result.Back[n].Sign,
-			bitree.BT.Result.Back[n].Out,
-			bitree.BT.Result.Back[n].In,
-			bitree.BT.Result.Back[n].ID)
+		if models.Debug {
+
+			fmt.Printf("Найдено в отложенных:  W:%d, %s(%d,%d), id: %d\n",
+				bitree.BT.Result.Back[n].W,
+				bitree.BT.Result.Back[n].Sign,
+				bitree.BT.Result.Back[n].Out,
+				bitree.BT.Result.Back[n].In,
+				bitree.BT.Result.Back[n].ID)
+		}
 
 		node := bitree.BT.Result.Back[n].Node
 		w := bitree.BT.Result.Back[n].W

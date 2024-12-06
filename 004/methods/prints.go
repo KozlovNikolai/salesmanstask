@@ -3,6 +3,7 @@ package methods
 import (
 	"fmt"
 	"salesmanstask/004/bitree"
+	"salesmanstask/004/models"
 	"salesmanstask/data"
 
 	"github.com/fatih/color"
@@ -89,9 +90,15 @@ func PrintArrayOfNodes(arr []bitree.Node) {
 
 func PrintResult(toursArray []bitree.Node, matrixNamed [][]int, out int) {
 	rt := make(map[int]int)
-	fmt.Printf("\nResult tour with Q: %d\n", bitree.BT.CurWeight)
+	if models.Debug {
+
+		fmt.Printf("\nResult tour with Q: %d\n", bitree.BT.CurWeight)
+	}
 	for _, v := range toursArray {
-		fmt.Printf("ID:%d, W:%d, %s(%d,%d)\n", v.ID, v.W, v.Sign, v.Out, v.In)
+		if models.Debug {
+
+			fmt.Printf("ID:%d, W:%d, %s(%d,%d)\n", v.ID, v.W, v.Sign, v.Out, v.In)
+		}
 		rt[v.Out] = v.In
 	}
 	temp := 1
