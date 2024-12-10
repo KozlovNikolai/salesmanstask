@@ -11,13 +11,13 @@ import (
 	"time"
 )
 
-var Debug = true
+var Debug = false
 
 func main() {
 	for i := range data.Matrixes {
 		fmt.Printf("\n#########################\n#\tMatrix: %d\t#\n#########################\n", i)
 		t := time.Now()
-		out := 0
+		out := 1
 		Calculate(data.Matrixes[i], out)
 
 		ts := time.Since(t)
